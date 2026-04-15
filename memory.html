@@ -1,0 +1,163 @@
+<!doctype html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CKZiU - memory</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body>
+  <div class="kontener">
+    <h2>CKZiU - memory</h2>
+
+    <div class="gra"></div>
+    <div class="kontener-przyciski">
+      <button class="start" onclick="rozpocznijGre()">START</button>
+      <button class="reset" onclick="window.location.reload()">RESET</button>
+    </div>
+    <p class="stoper">
+      <span class="sekundy">00</span>:<span class="setne">00</span>
+    </p>
+    <p class="wynik">Twój wynik to: <span class="liczbaWyniku">0</span></p>
+    <div class="opis">
+      <h3>Opis gry</h3>
+      <p>
+        Gra typu „Memory” polega na odnajdywaniu par identycznych obrazków.
+        Wszystkie kafelki są początkowo zakryte. Zadaniem gracza jest odkrywanie ich po dwa
+        i zapamiętywanie ich położenia, aby jak najszybciej dopasować wszystkie pary.
+      </p>
+
+      <h3>Instrukcja</h3>
+      <ul>
+        <li>Kliknij przycisk <b>START</b>, aby rozpocząć grę i uruchomić stoper.</li>
+        <li>Klikaj kafelki, aby odkrywać obrazki.</li>
+        <li>Możesz odkryć maksymalnie dwa kafelki jednocześnie.</li>
+        <li>Jeśli obrazki są takie same – zostają odkryte na stałe.</li>
+        <li>Jeśli są różne – zostaną zakryte po krótkiej chwili.</li>
+        <li>Twoim celem jest odnalezienie wszystkich par.</li>
+        <li>Wynik zwiększa się o 2 punkty za każdą poprawnie dopasowaną parę.</li>
+        <li>Gra kończy się po znalezieniu wszystkich par – liczy się czas i wynik.</li>
+        <li>Przycisk <b>RESET</b> odświeża grę i pozwala zacząć od nowa.</li>
+      </ul>
+    </div>
+  </div>
+
+  <script>
+    const obrazki = [
+      "baba.jpg",
+      "baba.jpg",
+      "budynek.jpg",
+      "budynek.jpg",
+      "budynekB.jpg",
+      "budynekB.jpg",
+      "budynekC.jpg",
+      "budynekC.jpg",
+      "kamien.jpg",
+      "kamien.jpg",
+      "kotokno.jpg",
+      "kotokno.jpg",
+      "lawka.jpg",
+      "lawka.jpg",
+      "smieci.jpg",
+      "smieci.jpg"
+    ];
+
+    let rozlosowaneObrazki = obrazki.sort(() => Math.random() - 0.5);
+    let plansza = document.querySelector(".gra");
+    let blokadaKlikniec = true;
+    let tablicaWyniku = 0;
+
+    for (let i = 0; i < rozlosowaneObrazki.length; i++) {
+      let kafelek = document.createElement("div");
+      kafelek.className = "obrazek";
+      kafelek.innerHTML =
+        "<img src='" + rozlosowaneObrazki[i] + "'width='80' height='100'>";
+      kafelek.addEventListener("click", function () {
+        if (this.classList.contains("para") || blokadaKlikniec) {
+          return;
+        }
+        if (document.querySelectorAll(".odkrytyKafelek").length >= 2) {
+          return;
+        }
+
+        this.classList.add("odkrytyKafelek");
+
+        if (document.querySelectorAll(".odkrytyKafelek").length === 2) {
+          setTimeout(sprawdz, 500);
+        }
+      });
+      plansza.appendChild(kafelek);
+    }
+
+    function sprawdz() {
+      let odkryteKafelki = document.querySelectorAll(".odkrytyKafelek");
+
+      if (odkryteKafelki.length == 2) {
+        if (odkryteKafelki[0].innerHTML == odkryteKafelki[1].innerHTML) {
+          odkryteKafelki[0].classList.add("para");
+          odkryteKafelki[1].classList.add("para");
+          odkryteKafelki[0].classList.remove("odkrytyKafelek");
+          odkryteKafelki[1].classList.remove("odkrytyKafelek");
+
+          tablicaWyniku += 2;
+          document.querySelector(".liczbaWyniku").textContent = tablicaWyniku;
+
+          let pary = document.querySelectorAll(".para");
+          if (pary.length == rozlosowaneObrazki.length) {
+            clearInterval(interwal);
+            alert("Wygrałeś! Twój wynik: " + tablicaWyniku);
+          }
+        } else {
+          blokadaKlikniec = true;
+          setTimeout(() => {
+            odkryteKafelki[0].classList.remove("odkrytyKafelek");
+            odkryteKafelki[1].classList.remove("odkrytyKafelek");
+            blokadaKlikniec = false;
+          }, 500);
+        }
+      }
+    }
+
+    let sekundy = 0;
+    let setne = 0;
+    let interwal;
+
+    const wyswietlSekundy = document.querySelector(".sekundy");
+    const wyswietlSetne = document.querySelector(".setne");
+
+    function rozpocznijGre() {
+      blokadaKlikniec = false;
+      startStoper();
+      document.querySelector(".start").disabled = true;
+    }
+
+    function startStoper() {
+      clearInterval(interwal);
+
+      interwal = setInterval(function () {
+        setne = setne + 1;
+
+        if (setne > 99) {
+          setne = 0;
+          sekundy = sekundy + 1;
+        }
+
+        if (sekundy < 10) {
+          wyswietlSekundy.textContent = "0" + sekundy;
+        } else {
+          wyswietlSekundy.textContent = sekundy;
+        }
+
+        if (setne < 10) {
+          wyswietlSetne.textContent = "0" + setne;
+        } else {
+          wyswietlSetne.textContent = setne;
+        }
+      }, 10);
+    }
+  </script>
+</body>
+
+</html>
