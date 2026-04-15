@@ -1,0 +1,128 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+body{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    min-height:100vh;
+    background-color:#294a70;
+}
+
+.kontener{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:30px;
+    background-color:#49688e;
+    padding:40px 60px;
+}
+
+h2{
+    font-size:3em;
+    color:white;
+}
+
+.reset{
+    padding:15px 20px;
+    background-color:white;
+    color:#49688e;
+    border:none;
+    font-size:1.5em;
+    cursor:pointer;
+}
+
+.reset:focus{
+    background-color:#294a70;
+    color:white;
+}
+
+.start{
+    padding: 15px 20px;
+    background-color: white;
+    color: #49688e;
+    border: none;
+    font-size: 1.5em;
+    cursor:pointer;
+}
+
+.start:focus{
+    background-color: #294a70;
+    color: white;
+}
+
+.kontener-przyciski{
+    display:flex;
+    justify-content: center;
+    gap:25px;
+}
+
+.gra{
+    width:440px;
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px;
+}
+
+.obrazek{
+    position:relative;
+    width:100px;
+    height:100px;
+    background-color:white;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    cursor:pointer;
+}
+
+.obrazek::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background-color:#f4a024;
+}
+
+.obrazek.odkrytyKafelek::after,
+.obrazek.para::after{
+    display:none;
+}
+
+.stoper{
+    font-size: 2.5em;
+    color: white;
+}
+
+.wynik{
+    font-size: 2.5em;
+    color: white;
+}
+.opis {
+  background-color: #49688e;
+  padding: 15px;
+  margin: 15px auto;
+  width: 80%;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  font-family: Arial, sans-serif;
+  color: #fff
+}
+
+.opis h3 {
+  margin-top: 10px;
+  color: #fff;
+}
+
+.opis p {
+  text-align: justify;
+}
+
+.opis ul {
+  padding-left: 20px;
+}
+
+.opis li {
+  margin-bottom: 5px;
+}

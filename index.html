@@ -1,0 +1,255 @@
+<!doctype html>
+<html lang="pl">
+
+<head>
+  <meta charset="UTF-8" />
+  <title>Quiz Game</title>
+  <style>
+    body {
+      font-family: Arial;
+      background: #294a70;
+      text-align: center;
+      color: white;
+    }
+
+    .quiz-box {
+      background: #49688e;
+      padding: 20px;
+      margin: 50px auto;
+      width: 400px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    button {
+      display: block;
+      width: 100%;
+      margin: 10px 0;
+      padding: 10px;
+      border: none;
+      background: #f4a024;
+      color: black;
+      border-radius: 5px;
+      cursor: pointer;
+      font-weight: 700;
+    }
+
+    button:hover {
+      background: #9e6816;
+    }
+
+    .opis {
+      background: #3b587c;
+      padding: 15px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      text-align: left;
+      color: #fff;
+    }
+
+    .opis h3 {
+      margin: 5px 0;
+      color: #fff;
+
+    }
+
+    .opis p {
+      font-size: 14px;
+      line-height: 1.4;
+    }
+
+    .opis ul {
+      padding-left: 20px;
+    }
+
+    .opis li {
+      margin-bottom: 5px;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="quiz-box">
+    <p id="score"></p>
+    <h2 id="question">Pytanie</h2>
+    <div id="answers"></div>
+
+  </div>
+  <div class="opis">
+    <h3>Opis quizu</h3>
+    <p>
+      Quiz sprawdza Twoją wiedzę o CKZiU. Zawiera losowo wybrane pytania,
+      na które musisz odpowiedzieć, wybierając jedną z podanych opcji.
+      Na końcu zobaczysz swój wynik w punktach oraz procentach.
+    </p>
+
+    <h3>Instrukcja</h3>
+    <ul>
+      <li>Quiz składa się z 5 losowych pytań.</li>
+      <li>Przeczytaj pytanie i wybierz jedną odpowiedź.</li>
+      <li>Za każdą poprawną odpowiedź otrzymujesz 1 punkt.</li>
+      <li>Po udzieleniu odpowiedzi przechodzisz do kolejnego pytania.</li>
+      <li>Na końcu zobaczysz swój wynik i procent poprawnych odpowiedzi.</li>
+      <li>Możesz zagrać ponownie klikając przycisk <b>"Zagraj ponownie"</b>.</li>
+    </ul>
+  </div>
+  <script>
+    // 10 pytań
+    const allQuestions = [
+      {
+        question: "Którego z kierunków nie znajdziesz w ckziu?",
+        answers: [
+          "Technik ekologistyk ",
+          "Technik tekstronik",
+          "Technik spedytor",
+          "technik gastronomi",
+        ],
+        correct: 4,
+      },
+      {
+        question: "Kto jest obecnym dyrektorem ckziu?",
+        answers: [
+          "Dominika Walicka",
+          "Jan Bołtuć",
+          "Agata Szymor",
+          "Krystian Grzywacz",
+        ],
+        correct: 1,
+      },
+      {
+        question: "Ile lat ma szkoła?",
+        answers: ["67", "156", "183", "145"],
+        correct: 2,
+      },
+      {
+        question:
+          "Jakich języków obcych poza angielskim mozesz sie uczyc w ckziu?",
+        answers: [
+          "francuski i niemiecki ",
+          "niemiecki i hiszpański ",
+          "hiszpański, niemiecki i rosyjski ",
+          "włoski i niemiecki",
+        ],
+        correct: 3,
+      },
+      {
+        question:
+          "Ile kosztuje zapiekanka(z pieczarkami) w szkolonym bufecie?",
+        answers: ["13zł", "15zł", "11zł", "17zł"],
+        correct: 1,
+      },
+      {
+        question: "Ile wynosi semestralna opłata za palarnie?",
+        answers: ["5zł", "10zł", "12.50zł", "67zł"],
+        correct: 2,
+      },
+      {
+        question: "Kto jest przewodniczącym szkoły?",
+        answers: [
+          "Julia Stańczak",
+          "Antoni Włodarczyk",
+          "Joanna Jajczak",
+          "Matusz Herszel",
+        ],
+        correct: 4,
+      },
+      {
+        question: "jakiego koloru są główne drzwi wejściowe do szkoły?",
+        answers: ["brązowe", "zielone", "czerwone", "niebieskie"],
+        correct: 2,
+      },
+      {
+        question:
+          "Jaka była najniższa temperatura w sali w obecnym roku(2026)",
+        answers: ["20", "15", "11", "7"],
+        correct: 3,
+      },
+      {
+        question: "W jakim budynku znajduje sie duża sala gimnastyczna?",
+        answers: ["A", "B", "C", "D"],
+        correct: 2,
+      },
+    ];
+
+    // losowanie 5 pytań
+    function getRandomQuestions(arr, count) {
+      const shuffled = [...arr].sort(() => 0.5 - Math.random());
+      return shuffled.slice(0, count);
+    }
+
+    const quiz = getRandomQuestions(allQuestions, 5);
+
+    let currentQuestion = 0;
+    let score = 0;
+
+    function loadQuestion() {
+      const q = quiz[currentQuestion];
+      document.getElementById("question").innerText = q.question;
+      const answersDiv = document.getElementById("answers");
+      answersDiv.innerHTML = "";
+
+      q.answers.forEach((answer, index) => {
+        const btn = document.createElement("button");
+        btn.innerText = answer;
+        btn.onclick = () => checkAnswer(index);
+        answersDiv.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(index) {
+      if (index === quiz[currentQuestion].correct) {
+        score++;
+      }
+      currentQuestion++;
+
+      if (currentQuestion < quiz.length) {
+        loadQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      const percent = Math.round((score / quiz.length) * 100);
+
+      document.getElementById("question").innerText = "Koniec gry!";
+      document.getElementById("answers").innerHTML = "";
+      document.getElementById("score").innerText =
+        `Twój wynik: ${score}/${quiz.length} (${percent}%)`;
+    }
+
+    loadQuestion();
+    // restart quiz
+    function restartQuiz() {
+      currentQuestion = 0;
+      score = 0;
+      const newQuestions = getRandomQuestions(allQuestions, 5);
+      quiz.length = 0;
+      quiz.push(...newQuestions);
+      document.getElementById("score").innerText = "";
+      loadQuestion();
+    }
+
+    // pokaz wynik + przyciski
+    function showResult() {
+      const percent = Math.round((score / quiz.length) * 100);
+
+      document.getElementById("question").innerText = "Koniec gry!";
+
+      document.getElementById("answers").innerHTML = `
+    <button onclick="restartQuiz()">Zagraj ponownie</button>
+    <button onclick="goToPage()">Przejdź do strony</button>
+  `;
+
+      document.getElementById("score").innerText =
+        `Twój wynik: ${score}/${quiz.length} (${percent}%)`;
+    }
+
+    // przekierowanie
+    function goToPage() {
+      window.location.href = "https://www.google.com";
+    }
+  </script>
+</body>
+
+</html>
